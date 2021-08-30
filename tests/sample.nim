@@ -8,5 +8,9 @@
 import unittest
 
 import nimgecko
-test "can add":
-  check add(5, 5) == 10
+
+let r = newCoinGecko()
+
+
+test "ping":
+  check r.ping().gecko_says == "(V3) To the Moon!"
