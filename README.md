@@ -23,6 +23,7 @@ echo r.ping().gecko_says
 
 - ping
 - simple
-- coins (on-going)
+- coins
+- contract (on-going)
 
 #### &copy; 2021 | World of Cryptopups

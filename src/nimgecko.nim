@@ -83,3 +83,131 @@ proc simpleTokenPrice*(this: CoinGecko | AsyncCoinGecko,
 proc simpleSupportedVsCurrencies*(this: CoinGecko | AsyncCoinGecko): Future[JsonNode] {.multisync.} = 
   ## Get list of supported_vs_currencies.
   result = await this.request("simple/supported_vs_currencies")
+
+
+#==================== `/coins/` endpoints
+
+type
+  Coin* = ref object
+    id*: string
+    symbol*: string
+    name*: string
+
+
+proc coinsList*(this: CoinGecko | AsyncCoinGecko,
+  include_platform = false,
+  ): Future[seq[Coin]] {.multisync.} =
+  ## List all supported coins id, name and symbol. 
+  let 
+    url = fmt"coins/list?include_platform={include_platform}"
+    r = await this.request(url)
+
+  result = to(r, seq[Coin])
+
+
+proc coinsMarket*(this: CoinGecko | AsyncCoinGecko,
+  vs_currency: string,
+  ids: seq[string] = @[],
+  category: string,
+  order: string = "market_cap_desc",
+  per_page: int = 100,
+  page: int = 1,
+  sparkline = false,
+  price_change_percentage: seq[string] = @[]
+  ): Future[JsonNode] {.multisync.} = 
+  ## List all supported coins price, market cap, volume, and market related data.
+  let
+    idss = ids.join(",")
+    priceChanges = price_change_percentage.join(",")
+    url = &"coins/markets?vs_currency={vs_currency}&ids={idss}&category={category}&order={order}&per_page={per_page}&page={page}&sparkline={sparkline}&price_change_percentage={priceChanges}"
+
+  result = await this.request(url)
+
+
+proc coinsID*(this: CoinGecko | AsyncCoinGecko,
+  id: string,
+  localization = true,
+  tickers = true,
+  market_data = true,
+  community_data = true,
+  developer_data = true,
+  sparkline = true
+  ): Future[JsonNode] {.multisync.} =
+  ## Get current data (name, price, market, ... including exchange tickers) for a coin.
+  let url = &"coins/{id}?localization={localization}&tickers={tickers}&market_data={market_data}&community_data={community_data}&developer_data={developer_data}&sparkline={sparkline}"
+
+  result = await this.request(url)
+
+
+proc coinsTickers*(this: CoinGecko | AsyncCoinGecko,
+  id: string,
+  exchange_ids: seq[string] = @[],
+  include_exchange_logo: bool = false,
+  page: int = 1,
+  order: string = "trust_score_desc",
+  depth: bool = false
+  ): Future[JsonNode] {.multisync.} =
+  ## Get coin tickers (paginated to 100 items).
+  let url = &"coins/{id}/tickers?exchange_ids={exchange_ids}&include_exchange_logo={include_exchange_logo}&page={page}&order={order}&depth={depth}"
+
+  result = await this.request(url)
+
+
+proc coinsHistory*(this: Coingecko | AsyncCoinGecko,
+  id: string,
+  date: string,
+  localization: bool = true 
+  ): Future[JsonNode] {.multisync.} =
+  ## Get historical data (name, price, market, stats) at a given date for a coin.
+  let url = &"coins/{id}/history?date={date}&localization={localization}"
+
+  result = await this.request(url)
+
+
+proc coinsMarketChart*(this: CoinGecko | AsyncCoinGecko,
+  id: string, 
+  vs_currency: string,
+  days: string,
+  interval: string = ""
+  ): Future[JsonNode] {.multisync.} =
+  ## Get historical market data include price, market cap, and 24h volume (granularity auto)
+  let url = &"coins/{id}/market_chart?vs_currency={vs_currency}&days={days}&interval={interval}"
+
+  result = await this.request(url)
+
+
+proc coinsMarketChartRange*(this: CoinGecko | AsyncCoinGecko,
+  id: string,
+  vs_currency: string,
+  `from`: string,
+  to: string,
+  ): Future[JsonNode] {.multisync.} =
+  ## Get historical market data include price, market cap, and 24h volume within a range of timestamp (granularity auto)
+  let url = &"coins/{id}/market_chart/range?vs_currency={vs_currency}&from={`from`}&to={to}"
+  echo url
+
+  result = await this.request(url)
+  
+
+proc coinsStatusUpdates*(this: CoinGecko | AsyncCoinGecko,
+  id: string,
+  per_page: int = 50,
+  page: int = 1,
+  ): Future[JsonNode] {.multisync.} =
+  ## Get status updates for a given coin
+  let url = &"coins/{id}/status_updates?per_page={per_page}&page={page}"
+
+  result = await this.request(url)
+
+
+proc coinsOHLC*(this: CoinGecko | AsyncCoinGecko,
+  id: string,
+  vs_currency: string,
+  days: string,
+  ): Future[JsonNode] {.multisync.} =
+  ## Get coin's OHLC
+  let url = &"coins/{id}/ohlc?vs_currency={vs_currency}&days={days}"
+
+  result = await this.request(url) 
+
+
