@@ -1,8 +1,8 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.0.1"
 author        = "TheBoringDude"
-description   = "A new awesome nimble package"
+description   = "A simple api wrapper for CoinGecko API"
 license       = "ISC"
 srcDir        = "src"
 

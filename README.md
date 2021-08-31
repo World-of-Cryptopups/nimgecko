@@ -1,6 +1,6 @@
 # nim-gecko
 
-A simple client for CoinGecko API (https://www.coingecko.com/en/api/documentation)
+A simple api wrapper for CoinGecko API (https://www.coingecko.com/en/api/documentation)
 
 ## Install
 
