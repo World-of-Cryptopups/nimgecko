@@ -19,11 +19,8 @@ let r = newCoinGecko()
 echo r.ping().gecko_says
 ```
 
-## Currently Implemented Endpoints
+### Note:
 
-- ping
-- simple
-- coins
-- contract (on-going)
+All functions are not yet tested and not assured to be working 100% correctly and fully. Either the endpoint was wrong or wrong query implementation.
 
 #### &copy; 2021 | World of Cryptopups
